@@ -1,0 +1,255 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Sign Up - Pawsome Pets</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #ffffff;
+            border-radius: 1rem; /* Rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 28rem; /* Max width for larger screens */
+        }
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .tab-button {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: #666;
+            transition: all 0.2s ease-in-out;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+        .tab-button.active {
+            color: #6366f1;
+            border-color: #6366f1;
+            background-color: #f8fafc;
+        }
+        .tab-button:hover:not(.active) {
+            background-color: #f0f4f8;
+        }
+        input[type="text"],
+        input[type="password"] {
+            border: 1px solid #cbd5e0; /* Light gray border */
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            box-sizing: border-box; /* Include padding in width */
+            transition: border-color 0.2s ease-in-out;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #6366f1; /* Indigo focus color */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Light indigo shadow */
+        }
+        button[type="submit"] {
+            background-color: #6366f1; /* Indigo button */
+            color: #ffffff;
+            padding: 0.85rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+        }
+        button[type="submit"]:hover {
+            background-color: #4f46e5; /* Darker indigo on hover */
+            transform: translateY(-2px);
+        }
+        .error-message {
+            color: #ef4444; /* Red error message */
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        .success-message {
+            color: #22c55e; /* Green success message */
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Welcome to Pawsome Pets!</h2>
+
+        <div class="tab-buttons">
+            <div id="loginTab" class="tab-button active">Login</div>
+            <div id="signupTab" class="tab-button">Sign Up</div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="space-y-6">
+            <div>
+                <label for="loginUsername" class="block text-sm font-medium text-gray-700 mb-2">Username:</label>
+                <input type="text" id="loginUsername" name="username" required>
+            </div>
+            <div>
+                <label for="loginPassword" class="block text-sm font-medium text-gray-700 mb-2">Password:</label>
+                <input type="password" id="loginPassword" name="password" required>
+            </div>
+            <div id="loginErrorMessage" class="error-message text-center hidden"></div>
+            <div id="loginSuccessMessage" class="success-message text-center hidden"></div>
+            <button type="submit">Login</button>
+        </form>
+
+        <!-- Sign Up Form -->
+        <form id="signupForm" class="space-y-6 hidden">
+            <div>
+                <label for="signupUsername" class="block text-sm font-medium text-gray-700 mb-2">New Username:</label>
+                <input type="text" id="signupUsername" name="newUsername" required>
+            </div>
+            <div>
+                <label for="signupPassword" class="block text-sm font-medium text-gray-700 mb-2">New Password:</label>
+                <input type="password" id="signupPassword" name="newPassword" required>
+            </div>
+            <div id="signupErrorMessage" class="error-message text-center hidden"></div>
+            <div id="signupSuccessMessage" class="success-message text-center hidden"></div>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+    <script>
+        // Get elements
+        const loginTab = document.getElementById('loginTab');
+        const signupTab = document.getElementById('signupTab');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+
+        const loginUsernameInput = document.getElementById('loginUsername');
+        const loginPasswordInput = document.getElementById('loginPassword');
+        const loginErrorMessageDiv = document.getElementById('loginErrorMessage');
+        const loginSuccessMessageDiv = document.getElementById('loginSuccessMessage');
+
+        const signupUsernameInput = document.getElementById('signupUsername');
+        const signupPasswordInput = document.getElementById('signupPassword');
+        const signupErrorMessageDiv = document.getElementById('signupErrorMessage');
+        const signupSuccessMessageDiv = document.getElementById('signupSuccessMessage');
+
+        // Function to switch tabs
+        function showTab(tabName) {
+            if (tabName === 'login') {
+                loginTab.classList.add('active');
+                signupTab.classList.remove('active');
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+            } else {
+                signupTab.classList.add('active');
+                loginTab.classList.remove('active');
+                signupForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            }
+            // Clear messages when switching tabs
+            loginErrorMessageDiv.classList.add('hidden');
+            loginSuccessMessageDiv.classList.add('hidden');
+            signupErrorMessageDiv.classList.add('hidden');
+            signupSuccessMessageDiv.classList.add('hidden');
+        }
+
+        // Event listeners for tab buttons
+        loginTab.addEventListener('click', () => showTab('login'));
+        signupTab.addEventListener('click', () => showTab('signup'));
+
+        // Sign Up Form Submission
+        signupForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = signupUsernameInput.value.trim();
+            const password = signupPasswordInput.value.trim();
+
+            // Hide any previous messages
+            signupErrorMessageDiv.classList.add('hidden');
+            signupSuccessMessageDiv.classList.add('hidden');
+
+            if (username === '' || password === '') {
+                signupErrorMessageDiv.textContent = 'Please enter both username and password.';
+                signupErrorMessageDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Get existing users from localStorage or initialize an empty array
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Check if username already exists
+            const userExists = users.some(user => user.username === username);
+
+            if (userExists) {
+                signupErrorMessageDiv.textContent = 'Username already taken. Please choose a different one.';
+                signupErrorMessageDiv.classList.remove('hidden');
+            } else {
+                // Add new user
+                users.push({ username: username, password: password });
+                localStorage.setItem('users', JSON.stringify(users));
+
+                signupSuccessMessageDiv.textContent = 'Account created successfully! You can now log in.';
+                signupSuccessMessageDiv.classList.remove('hidden');
+
+                // Optionally, switch to login tab after successful signup
+                setTimeout(() => {
+                    showTab('login');
+                    signupUsernameInput.value = ''; // Clear signup fields
+                    signupPasswordInput.value = '';
+                }, 1500);
+            }
+        });
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = loginUsernameInput.value.trim();
+            const password = loginPasswordInput.value.trim();
+
+            // Hide any previous messages
+            loginErrorMessageDiv.classList.add('hidden');
+            loginSuccessMessageDiv.classList.add('hidden');
+
+            if (username === '' || password === '') {
+                loginErrorMessageDiv.textContent = 'Please enter both username and password.';
+                loginErrorMessageDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Get existing users from localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            // Find user
+            const foundUser = users.find(user => user.username === username && user.password === password);
+
+            if (foundUser) {
+                loginSuccessMessageDiv.textContent = 'Login successful! Redirecting to homepage...';
+                loginSuccessMessageDiv.classList.remove('hidden');
+
+                // Redirect after a short delay
+                setTimeout(() => {
+                    window.location.replace('./index.html'); // Changed to window.location.replace
+                }, 1500);
+            } else {
+                loginErrorMessageDiv.textContent = 'Invalid username or password. Please try again.';
+                loginErrorMessageDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
